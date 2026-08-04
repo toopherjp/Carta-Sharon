@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" href="img/flowers.png" type="image/x-icon">
+    <title>FLORES</title>
+    
+    <style>
+        /* ========================================== */
+        /* ===== 1. ESTILOS BASE ===== */
+        /* ========================================== */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            overflow-x: hidden;
+            min-height: 100vh;
+            min-height: 100dvh;
+            touch-action: manipulation;
+            position: relative;
+        }
+
+        /* ========================================== */
+        /* ===== 2. CARTA / MENSAJE ===== */
+        /* ========================================== */
+        .mensaje-container {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 18px 20px;
+            max-width: 92%;
+            width: 420px;
+            text-align: center;
+            border: 2px solid #fce700;
+            box-shadow: 0 0 30px rgba(252, 231, 0, 0.2);
+            animation: aparecer 1.5s ease-out forwards;
+            opacity: 0;
+            pointer-events: none;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .mensaje-container .mensaje-texto {
+            pointer-events: auto;
+            color: #fff;
+            font-family: 'Poppins', cursive;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            letter-spacing: 0.3px;
+        }
+
+        @keyframes aparecer {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+
+        .mensaje-container .mensaje-texto .highlight {
+            color: #fce700;
+            font-weight: bold;
+        }
+
+        .mensaje-container .mensaje-texto .corazon {
+            color: #ff6b6b;
+        }
+
+        .mensaje-container .firma {
+            margin-top: 10px;
+            color: #fce700;
+            font-family: 'Poppins', cursive;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .mensaje-container .firma span {
+            color: #ff6b6b;
+        }
+
+        .mensaje-container::-webkit-scrollbar {
+            width: 3px;
+        }
+        .mensaje-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mensaje-container::-webkit-scrollbar-thumb {
+            background: #fce700;
+            border-radius: 10px;
+        }
+
+        /* ========================================== */
+        /* ===== 3. BOTÓN DE MÚSICA ===== */
+        /* ========================================== */
+        .btn-musica {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 1001;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #fce700;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            color: #fce700;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            touch-action: manipulation;
+        }
+
+        .btn-musica:active {
+            transform: scale(0.9);
+        }
+
+        .btn-musica.mute {
+            opacity: 0.5;
+        }
+
+        /* ========================================== */
+        /* ===== 4. BOTÓN SECRETO (50 taps) ===== */
+        /* ========================================== */
+        .btn-secreto {
+            position: fixed;
+            right: -80px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            z-index: 1001;
+            background: linear-gradient(145deg, #fce700, #f5a623);
+            border: none;
+            border-radius: 30px 0 0 30px;
+            padding: 18px 22px;
+            color: #1a1a1a;
+            font-family: 'Poppins', cursive;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(252, 231, 0, 0.4);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            pointer-events: none;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            touch-action: manipulation;
+        }
+
+        .btn-secreto.show {
+            right: 0;
+            transform: translateY(-50%) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .btn-secreto:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 12px 40px rgba(252, 231, 0, 0.6);
+            padding-right: 28px;
+        }
+
+        .btn-secreto:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .btn-secreto .icono-corazon {
+            display: inline-block;
+            animation: pulseHeart 1.5s ease-in-out infinite;
+            font-size: 1.8rem;
+        }
+
+        @keyframes pulseHeart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .btn-secreto .subtexto {
+            font-size: 0.6rem;
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* ========================================== */
+        /* ===== 5. CONTADOR DE TAPS ===== */
+        /* ========================================== */
+        .tap-counter-flotante {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+            font-family: 'Poppins', cursive;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            pointer-events: none;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+            transition: all 0.5s ease;
+        }
+
+        .tap-counter-flotante .numero {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: rgba(252, 231, 0, 0.4);
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .tap-counter-flotante .texto {
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+
+        .tap-counter-flotante.completo .numero {
+            color: #fce700;
+            font-size: 3rem;
+            text-shadow: 0 0 30px rgba(252, 231, 0, 0.3);
+        }
+
+        .tap-counter-flotante.completo .texto {
+            color: #fce700;
+            opacity: 1;
+        }
+
+        /* ========================================== */
+        /* ===== 6. LLUVIA DE PÉTALOS ===== */
+        /* ========================================== */
+        @keyframes caerPetalo {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg) scale(0.2);
+                opacity: 0;
+            }
+        }
+
+        /* ========================================== */
+        /* ===== 7. ESTRELLAS ===== */
+        /* ========================================== */
+        @keyframes parpadear {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* ========================================== */
+        /* ===== 8. CURSOR ESCRITURA ===== */
+        /* ========================================== */
+        @keyframes parpadear-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* ========================================== */
+        /* ===== 9. ECUALUZADOR ===== */
+        /* ========================================== */
+        .ecualizador {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+            z-index: 1000;
+            align-items: flex-end;
+            height: 30px;
+            pointer-events: none;
+        }
+
+        .barra {
+            width: 5px;
+            background: linear-gradient(to top, #fce700, #ff6b6b);
+            border-radius: 3px;
+            animation: ecualizar 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes ecualizar {
+            0% { height: 4px; }
+            100% { height: 30px; }
+        }
+
+        .barra:nth-child(1) { animation-duration: 0.6s; }
+        .barra:nth-child(2) { animation-duration: 0.8s; }
+        .barra:nth-child(3) { animation-duration: 0.5s; }
+        .barra:nth-child(4) { animation-duration: 0.9s; }
+        .barra:nth-child(5) { animation-duration: 0.7s; }
+        .barra:nth-child(6) { animation-duration: 0.4s; }
+        .barra:nth-child(7) { animation-duration: 0.8s; }
+        .barra:nth-child(8) { animation-duration: 0.6s; }
+
+        /* ========================================== */
+        /* ===== 10. BRILLO MOUSE ===== */
+        /* ========================================== */
+        @keyframes desvanecer {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(3); }
+        }
+
+        /* ========================================== */
+        /* ===== 11. CORAZONES FLOTANTES ===== */
+        /* ========================================== */
+        @keyframes flotarCorazon {
+            0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(-100px) scale(1.5) rotate(20deg); }
+        }
+
+        /* ========================================== */
+        /* ===== 12. TAP TAP ===== */
+        /* ========================================== */
+        .tap-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1002;
+            pointer-events: none;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .tap-text {
+            font-family: 'Poppins', cursive;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: rgba(252, 231, 0, 0.12);
+            text-shadow: 0 0 40px rgba(252, 231, 0, 0.05);
+            animation: tapPulse 2s ease-in-out infinite;
+            user-select: none;
+            letter-spacing: 4px;
+            transition: all 0.3s ease;
+            word-break: break-word;
+        }
+
+        .tap-text.activo {
+            color: rgba(252, 231, 0, 0.8);
+            text-shadow: 0 0 60px rgba(252, 231, 0, 0.4);
+            transform: scale(1.1);
+        }
+
+        @keyframes tapPulse {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.7;
+                transform: scale(1.04);
+            }
+        }
+
+        /* Partículas al hacer tap */
+        @keyframes explotarParticula {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0) rotate(720deg);
+            }
+        }
+
+        .particula-tap {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            animation: explotarParticula 0.8s ease-out forwards;
+        }
+
+        /* ========================================== */
+        /* ===== 13. CONFETIS ===== */
+        /* ========================================== */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1500;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ========================================== */
+        /* ===== 14. RESPONSIVE - MÓVIL ===== */
+        /* ========================================== */
+        @media screen and (max-width: 574px) {
+            body {
+                padding: 0;
+                min-height: 100dvh;
+            }
+            
+            .mensaje-container {
+                bottom: 10px;
+                padding: 14px 16px;
+                max-width: 96%;
+                width: 100%;
+                border-radius: 14px;
+                max-height: 50vh;
+            }
+            
+            .mensaje-container .mensaje-texto {
+                font-size: 0.82rem;
+                line-height: 1.6;
+            }
+            
+            .mensaje-container .firma {
+                font-size: 0.7rem;
+                margin-top: 8px;
+            }
+            
+            .btn-musica {
+                width: 38px;
+                height: 38px;
+                font-size: 17px;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .btn-secreto {
+                padding: 14px 16px;
+                font-size: 0.9rem;
+                border-radius: 20px 0 0 20px;
+            }
+            
+            .btn-secreto .icono-corazon {
+                font-size: 1.4rem;
+            }
+            
+            .btn-secreto .subtexto {
+                font-size: 0.5rem;
+            }
+            
+            .ecualizador {
+                bottom: 65px;
+                height: 22px;
+                gap: 3px;
+            }
+            
+            .barra {
+                width: 4px;
+                border-radius: 2px;
+            }
+            
+            @keyframes ecualizar {
+                0% { height: 3px; }
+                100% { height: 22px; }
+            }
+            
+            .tap-text {
+                font-size: 1.6rem;
+                letter-spacing: 3px;
+            }
+            
+            .tap-text.activo {
+                transform: scale(1.05);
+            }
+            
+            .tap-counter-flotante .numero {
+                font-size: 2rem;
+            }
+            
+            .tap-counter-flotante.completo .numero {
+                font-size: 2.5rem;
+            }
+            
+            .particula-tap {
+                width: 4px !important;
+                height: 4px !important;
+            }
+            
+            .flowers {
+                transform: scale(0.7);
+                transform-origin: bottom center;
+            }
+            
+            .flower {
+                bottom: 5vmin;
+            }
+            
+            .flower__line {
+                height: 40vmin !important;
+            }
+            
+            .flower__leafs::after {
+                width: 5vmin !important;
+                height: 5vmin !important;
+                filter: blur(5vmin) !important;
+            }
+            
+            .flower__leaf {
+                width: 5vmin !important;
+                height: 7vmin !important;
+            }
+            
+            .flower__white-circle {
+                width: 6vmin !important;
+                height: 3vmin !important;
+                left: -2.5vmin !important;
+                top: -2vmin !important;
+            }
+            
+            .flower__light {
+                width: 0.8vmin !important;
+                height: 0.8vmin !important;
+            }
+            
+            .flower__grass {
+                bottom: 8vmin !important;
+            }
+            
+            .flower__grass--bottom {
+                height: 18vmin !important;
+            }
+            
+            .long-g {
+                transform: scale(0.6) !important;
+            }
+            
+            .long-g .leaf {
+                --w: 10vmin !important;
+                --h: 25vmin !important;
+            }
+        }
+
+        @media screen and (max-width: 380px) {
+            .mensaje-container .mensaje-texto {
+                font-size: 0.7rem;
+                line-height: 1.5;
+            }
+            
+            .tap-text {
+                font-size: 1.3rem;
+                letter-spacing: 2px;
+            }
+            
+            .flowers {
+                transform: scale(0.55);
+            }
+        }
+
+        @media screen and (min-width: 575px) and (max-width: 1024px) {
+            .mensaje-container {
+                max-width: 80%;
+                padding: 22px 30px;
+            }
+            
+            .tap-text {
+                font-size: 2.8rem;
+            }
+            
+            .flowers {
+                transform: scale(0.8);
+            }
+        }
+
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .mensaje-container {
+                max-height: 60vh;
+                bottom: 8px;
+                padding: 10px 15px;
+            }
+            
+            .mensaje-container .mensaje-texto {
+                font-size: 0.7rem;
+                line-height: 1.4;
+            }
+            
+            .mensaje-container .firma {
+                font-size: 0.6rem;
+                margin-top: 5px;
+            }
+            
+            .tap-text {
+                font-size: 1.2rem;
+            }
+            
+            .ecualizador {
+                bottom: 50px;
+                height: 16px;
+            }
+            
+            .barra {
+                width: 3px;
+            }
+            
+            @keyframes ecualizar {
+                0% { height: 2px; }
+                100% { height: 16px; }
+            }
+            
+            .tap-counter-flotante {
+                bottom: 75px;
+            }
+            
+            .tap-counter-flotante .numero {
+                font-size: 1.5rem;
+            }
+            
+            .flowers {
+                transform: scale(0.45);
+            }
+            
+            .btn-musica {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+                top: 8px;
+                right: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body class="container">
+    <!-- ========================================== -->
+    <!-- ===== FONDO NOCTURNO ===== -->
+    <!-- ========================================== -->
+    <div class="night"></div>
+
+    <!-- ========================================== -->
+    <!-- ===== BOTÓN DE MÚSICA ===== -->
+    <!-- ========================================== -->
+    <button class="btn-musica" id="btnMusica" title="Activar/Desactivar música">🔊</button>
+
+    <!-- ========================================== -->
+    <!-- ===== BOTÓN SECRETO (50 taps) ===== -->
+    <!-- ========================================== -->
+    <button class="btn-secreto" id="btnSecreto">
+        <span class="icono-corazon">💌</span>
+        Ver carta
+        <span class="subtexto">✨ para ti ✨</span>
+    </button>
+
+    <!-- ========================================== -->
+    <!-- ===== REPRODUCTOR DE MÚSICA ===== -->
+    <!-- ========================================== -->
+    <audio id="musicaFlores" loop preload="auto">
+        <source src="img/Floricienta.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <!-- ========================================== -->
+    <!-- ===== ECUALUZADOR ===== -->
+    <!-- ========================================== -->
+    <div class="ecualizador">
+        <div class="barra"></div>
+        <div class="barra"></div>
+        <div class="barra"></div>
+        <div class="barra"></div>
+        <div class="barra"></div>
+        <div class="barra"></div>
+        <div class="barra"></div>
+        <div class="barra"></div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== TAP TAP ===== -->
+    <!-- ========================================== -->
+    <div class="tap-container" id="tapContainer">
+        <div class="tap-text" id="tapText">✨ TAP TAP ✨</div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== CONTADOR DE TAPS ===== -->
+    <!-- ========================================== -->
+    <div class="tap-counter-flotante" id="tapCounter">
+        <span class="numero" id="tapNumero">0</span>
+        <span class="texto" id="tapTexto">toca la pantalla ✨</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== FLORES ===== -->
+    <!-- ========================================== -->
+    <div class="flowers">
+        <div class="flower flower--1">
+            <div class="flower__leafs flower__leafs--1">
+                <div class="flower__leaf flower__leaf--1"></div>
+                <div class="flower__leaf flower__leaf--2"></div>
+                <div class="flower__leaf flower__leaf--3"></div>
+                <div class="flower__leaf flower__leaf--4"></div>
+                <div class="flower__white-circle"></div>
+                <div class="flower__light flower__light--1"></div>
+                <div class="flower__light flower__light--2"></div>
+                <div class="flower__light flower__light--3"></div>
+                <div class="flower__light flower__light--4"></div>
+                <div class="flower__light flower__light--5"></div>
+                <div class="flower__light flower__light--6"></div>
+                <div class="flower__light flower__light--7"></div>
+                <div class="flower__light flower__light--8"></div>
+            </div>
+            <div class="flower__line">
+                <div class="flower__line__leaf flower__line__leaf--1"></div>
+                <div class="flower__line__leaf flower__line__leaf--2"></div>
+                <div class="flower__line__leaf flower__line__leaf--3"></div>
+                <div class="flower__line__leaf flower__line__leaf--4"></div>
+                <div class="flower__line__leaf flower__line__leaf--5"></div>
+                <div class="flower__line__leaf flower__line__leaf--6"></div>
+            </div>
+        </div>
+
+        <div class="flower flower--2">
+            <div class="flower__leafs flower__leafs--2">
+                <div class="flower__leaf flower__leaf--1"></div>
+                <div class="flower__leaf flower__leaf--2"></div>
+                <div class="flower__leaf flower__leaf--3"></div>
+                <div class="flower__leaf flower__leaf--4"></div>
+                <div class="flower__white-circle"></div>
+                <div class="flower__light flower__light--1"></div>
+                <div class="flower__light flower__light--2"></div>
+                <div class="flower__light flower__light--3"></div>
+                <div class="flower__light flower__light--4"></div>
+                <div class="flower__light flower__light--5"></div>
+                <div class="flower__light flower__light--6"></div>
+                <div class="flower__light flower__light--7"></div>
+                <div class="flower__light flower__light--8"></div>
+            </div>
+            <div class="flower__line">
+                <div class="flower__line__leaf flower__line__leaf--1"></div>
+                <div class="flower__line__leaf flower__line__leaf--2"></div>
+                <div class="flower__line__leaf flower__line__leaf--3"></div>
+                <div class="flower__line__leaf flower__line__leaf--4"></div>
+            </div>
+        </div>
+
+        <div class="flower flower--3">
+            <div class="flower__leafs flower__leafs--3">
+                <div class="flower__leaf flower__leaf--1"></div>
+                <div class="flower__leaf flower__leaf--2"></div>
+                <div class="flower__leaf flower__leaf--3"></div>
+                <div class="flower__leaf flower__leaf--4"></div>
+                <div class="flower__white-circle"></div>
+                <div class="flower__light flower__light--1"></div>
+                <div class="flower__light flower__light--2"></div>
+                <div class="flower__light flower__light--3"></div>
+                <div class="flower__light flower__light--4"></div>
+                <div class="flower__light flower__light--5"></div>
+                <div class="flower__light flower__light--6"></div>
+                <div class="flower__light flower__light--7"></div>
+                <div class="flower__light flower__light--8"></div>
+            </div>
+            <div class="flower__line">
+                <div class="flower__line__leaf flower__line__leaf--1"></div>
+                <div class="flower__line__leaf flower__line__leaf--2"></div>
+                <div class="flower__line__leaf flower__line__leaf--3"></div>
+                <div class="flower__line__leaf flower__line__leaf--4"></div>
+            </div>
+        </div>
+
+        <div class="grow-ans" style="--d:1.2s">
+            <div class="flower__g-long">
+                <div class="flower__g-long__top"></div>
+                <div class="flower__g-long__bottom"></div>
+            </div>
+        </div>
+
+        <div class="growing-grass">
+            <div class="flower__grass flower__grass--1">
+                <div class="flower__grass--top"></div>
+                <div class="flower__grass--bottom"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--1"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--2"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--3"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--4"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--5"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--6"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--7"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--8"></div>
+                <div class="flower__grass__overlay"></div>
+            </div>
+        </div>
+
+        <div class="growing-grass">
+            <div class="flower__grass flower__grass--2">
+                <div class="flower__grass--top"></div>
+                <div class="flower__grass--bottom"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--1"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--2"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--3"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--4"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--5"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--6"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--7"></div>
+                <div class="flower__grass__leaf flower__grass__leaf--8"></div>
+                <div class="flower__grass__overlay"></div>
+            </div>
+        </div>
+
+        <div class="grow-ans" style="--d:2.4s">
+            <div class="flower__g-right flower__g-right--1">
+                <div class="leaf"></div>
+            </div>
+        </div>
+
+        <div class="grow-ans" style="--d:2.8s">
+            <div class="flower__g-right flower__g-right--2">
+                <div class="leaf"></div>
+            </div>
+        </div>
+
+        <div class="grow-ans" style="--d:2.8s">
+            <div class="flower__g-front">
+                <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--1">
+                    <div class="flower__g-front__leaf"></div>
+                </div>
+                <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--2">
+                    <div class="flower__g-front__leaf"></div>
+                </div>
+                <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--3">
+                    <div class="flower__g-front__leaf"></div>
+                </div>
+                <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--4">
+                    <div class="flower__g-front__leaf"></div>
+                </div>
+                <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--5">
+                    <div class="flower__g-front__leaf"></div>
+                </div>
+                <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--6">
+                    <div class="flower__g-front__leaf"></div>
+                </div>
+                <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--7">
+                    <div class="flower__g-front__leaf"></div>
+                </div>
+                <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--8">
+                    <div class="flower__g-front__leaf"></div>
+                </div>
+                <div class="flower__g-front__line"></div>
+            </div>
+        </div>
+
+        <div class="grow-ans" style="--d:3.2s">
+            <div class="flower__g-fr">
+                <div class="leaf"></div>
+                <div class="flower__g-fr__leaf flower__g-fr__leaf--1"></div>
+                <div class="flower__g-fr__leaf flower__g-fr__leaf--2"></div>
+                <div class="flower__g-fr__leaf flower__g-fr__leaf--3"></div>
+                <div class="flower__g-fr__leaf flower__g-fr__leaf--4"></div>
+                <div class="flower__g-fr__leaf flower__g-fr__leaf--5"></div>
+                <div class="flower__g-fr__leaf flower__g-fr__leaf--6"></div>
+                <div class="flower__g-fr__leaf flower__g-fr__leaf--7"></div>
+                <div class="flower__g-fr__leaf flower__g-fr__leaf--8"></div>
+            </div>
+        </div>
+
+        <!-- Long-g -->
+        <div class="long-g long-g--0">
+            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:2.2s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:3.4s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--1">
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:3.8s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--2">
+            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:4.4s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:4.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--3">
+            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--4">
+            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--5">
+            <div class="grow-ans" style="--d:4s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--6">
+            <div class="grow-ans" style="--d:4.2s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:4.4s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:4.6s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:4.8s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="long-g long-g--7">
+            <div class="grow-ans" style="--d:3s"><div class="leaf leaf--0"></div></div>
+            <div class="grow-ans" style="--d:3.2s"><div class="leaf leaf--1"></div></div>
+            <div class="grow-ans" style="--d:3.5s"><div class="leaf leaf--2"></div></div>
+            <div class="grow-ans" style="--d:3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== MENSAJE COMPLETO ===== -->
+    <!-- ========================================== -->
+    <div class="mensaje-container" id="mensajeCarta">
+        <div class="mensaje-texto" id="textoCarta">
+            <span class="highlight">✨ Para ti</span> <span class="corazon">❤️</span><br><br>
+            <span id="textoEscritura"></span>
+        </div>
+        <div class="firma">
+            Con cariño <span>❤️</span> Toopher
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ===== SCRIPTS ===== -->
+    <!-- ========================================== -->
+    <script src="main.js"></script>
+    
+    <script>
+        // ==========================================
+        // 1. CONTROL DE MÚSICA
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            var audio = document.getElementById('musicaFlores');
+            var btn = document.getElementById('btnMusica');
+
+            function reproducirMusica() {
+                audio.play().then(function() {
+                    console.log('🎵 Música reproduciéndose');
+                    btn.textContent = '🔊';
+                    btn.classList.remove('mute');
+                }).catch(function(error) {
+                    console.log('⚠️ Error al reproducir:', error);
+                });
+            }
+
+            setTimeout(reproducirMusica, 1000);
+
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (audio.paused) {
+                    reproducirMusica();
+                } else {
+                    audio.pause();
+                    btn.textContent = '🔇';
+                    btn.classList.add('mute');
+                }
+            });
+
+            document.addEventListener('click', function() {
+                if (audio.paused) {
+                    reproducirMusica();
+                }
+            }, { once: true });
+
+            document.addEventListener('touchstart', function() {
+                if (audio.paused) {
+                    reproducirMusica();
+                }
+            }, { once: true });
+
+            audio.addEventListener('ended', function() {
+                audio.currentTime = 0;
+                audio.play().catch(function(e) {
+                    console.log('Error al reiniciar:', e);
+                });
+            });
+        });
+
+        // ==========================================
+        // 2. TEXTO MÁQUINA DE ESCRIBIR
+        // ==========================================
+        const textoCompleto = `Quería regalarte algo que no pudiera marchitarse con el tiempo.
+
+Cada flor representa un deseo de felicidad, una sonrisa y un bonito recuerdo para ti.
+
+Espero que este pequeño detalle haga tu día un poco más especial. 🌹`;
+
+        let index = 0;
+        const elementoTexto = document.getElementById('textoEscritura');
+
+        function escribirTexto() {
+            if (index < textoCompleto.length) {
+                let textoMostrado = textoCompleto.substring(0, index + 1);
+                textoMostrado = textoMostrado.replace(/\n/g, '<br>');
+                elementoTexto.innerHTML = textoMostrado + '<span class="cursor" style="color:#fce700;">|</span>';
+                index++;
+                const velocidad = 25 + Math.random() * 30;
+                setTimeout(escribirTexto, velocidad);
+            } else {
+                let textoFinal = textoCompleto.replace(/\n/g, '<br>');
+                elementoTexto.innerHTML = textoFinal + '<span class="cursor" style="color:#fce700; animation: parpadear-cursor 0.7s infinite;">|</span>';
+            }
+        }
+
+        setTimeout(escribirTexto, 2000);
+
+        // ==========================================
+        // 3. LLUVIA DE PÉTALOS
+        // ==========================================
+        function crearPetalos() {
+            const colores = ['#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43', '#ee5a24', '#fce700'];
+            
+            setInterval(() => {
+                const petalo = document.createElement('div');
+                const size = 8 + Math.random() * 12;
+                petalo.style.cssText = `
+                    position: fixed;
+                    top: -20px;
+                    left: ${Math.random() * 100}vw;
+                    width: ${size}px;
+                    height: ${size * 1.5}px;
+                    background: ${colores[Math.floor(Math.random() * colores.length)]};
+                    border-radius: 50% 50% 0 50%;
+                    opacity: 0.7;
+                    z-index: 999;
+                    pointer-events: none;
+                    animation: caerPetalo ${3 + Math.random() * 4}s linear forwards;
+                    transform: rotate(${Math.random() * 360}deg);
+                `;
+                document.body.appendChild(petalo);
+                setTimeout(() => petalo.remove(), 7000);
+            }, 200);
+        }
+
+        crearPetalos();
+
+        // ==========================================
+        // 4. ESTRELLAS
+        // ==========================================
+        function crearEstrellas() {
+            const cantidad = window.innerWidth < 574 ? 40 : 60;
+            for (let i = 0; i < cantidad; i++) {
+                const estrella = document.createElement('div');
+                estrella.style.cssText = `
+                    position: fixed;
+                    top: ${Math.random() * 100}vh;
+                    left: ${Math.random() * 100}vw;
+                    width: ${1.5 + Math.random() * 3}px;
+                    height: ${1.5 + Math.random() * 3}px;
+                    background: white;
+                    border-radius: 50%;
+                    z-index: 0;
+                    animation: parpadear ${2 + Math.random() * 3}s ease-in-out infinite;
+                    animation-delay: ${Math.random() * 2}s;
+                    opacity: ${0.3 + Math.random() * 0.7};
+                `;
+                document.body.appendChild(estrella);
+            }
+        }
+
+        crearEstrellas();
+
+        // ==========================================
+        // 5. BRILLO MOUSE (solo en desktop)
+        // ==========================================
+        if (window.innerWidth > 768) {
+            document.addEventListener('mousemove', (e) => {
+                const brillo = document.createElement('div');
+                brillo.style.cssText = `
+                    position: fixed;
+                    left: ${e.clientX - 8}px;
+                    top: ${e.clientY - 8}px;
+                    width: 16px;
+                    height: 16px;
+                    background: radial-gradient(circle, rgba(252, 231, 0, 0.25), transparent);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 9999;
+                    animation: desvanecer 1s ease-out forwards;
+                `;
+                document.body.appendChild(brillo);
+                setTimeout(() => brillo.remove(), 1000);
+            });
+        }
+
+        // ==========================================
+        // 6. TAP TAP CON CONTADOR Y BOTÓN SECRETO
+        // ==========================================
+        let tapCount = 0;
+        const MAX_TAPS = 50;
+        const tapText = document.getElementById('tapText');
+        const tapNumero = document.getElementById('tapNumero');
+        const tapTexto = document.getElementById('tapTexto');
+        const tapCounter = document.getElementById('tapCounter');
+        const btnSecreto = document.getElementById('btnSecreto');
+        let ultimoTap = 0;
+
+        // Función para crear confetis
+        function crearConfetis() {
+            const container = document.createElement('div');
+            container.className = 'confetti-container';
+            document.body.appendChild(container);
+
+            const colores = ['#fce700', '#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43', '#00d2d3', '#1dd1a1', '#ff6b6b', '#ffd93d'];
+            
+            for (let i = 0; i < 60; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colores[Math.floor(Math.random() * colores.length)];
+                confetti.style.width = Math.random() * 8 + 4 + 'px';
+                confetti.style.height = Math.random() * 8 + 4 + 'px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(confetti);
+            }
+
+            setTimeout(() => {
+                container.remove();
+            }, 5000);
+        }
+
+        // Función para crear partículas al hacer tap
+        function crearParticulasTap(x, y) {
+            const colores = ['#fce700', '#ff6b6b', '#ff9ff3', '#feca57', '#ff9f43', '#00d2d3', '#1dd1a1'];
+            const cantidad = window.innerWidth < 574 ? 8 : 12;
+
+            for (let i = 0; i < cantidad; i++) {
+                const particula = document.createElement('div');
+                const angulo = (Math.PI * 2 * i) / cantidad;
+                const distancia = 40 + Math.random() * 60;
+                const tx = Math.cos(angulo) * distancia;
+                const ty = Math.sin(angulo) * distancia;
+                const tamaño = 3 + Math.random() * 6;
+
+                particula.style.cssText = `
+                    left: ${x}px;
+                    top: ${y}px;
+                    width: ${tamaño}px;
+                    height: ${tamaño}px;
+                    background: ${colores[Math.floor(Math.random() * colores.length)]};
+                    --tx: ${tx}px;
+                    --ty: ${ty}px;
+                    animation-duration: ${0.5 + Math.random() * 0.4}s;
+                `;
+                particula.className = 'particula-tap';
+                document.body.appendChild(particula);
+                setTimeout(() => particula.remove(), 1000);
+            }
+        }
+
+        // Función para actualizar la interfaz de taps
+        function updateTapUI() {
+            // Actualizar número
+            tapNumero.textContent = tapCount;
+            
+            // Actualizar barra de progreso (en el número)
+            if (tapCount >= MAX_TAPS) {
+                tapCounter.classList.add('completo');
+                tapTexto.textContent = '🎉 ¡Sorpresa desbloqueada! 🎉';
+            } else {
+                tapCounter.classList.remove('completo');
+                const restantes = MAX_TAPS - tapCount;
+                if (restantes > 10) {
+                    tapTexto.textContent = `faltan ${restantes} taps ✨`;
+                } else if (restantes > 0) {
+                    tapTexto.textContent = `¡casi! ${restantes} taps más 💪`;
+                } else {
+                    tapTexto.textContent = 'toca la pantalla ✨';
+                }
+            }
+
+            // Cambiar mensaje del TAP TAP
+            if (tapCount >= MAX_TAPS) {
+                tapText.textContent = '💖 ¡Lo lograste! 💖';
+                tapText.style.color = 'rgba(252, 231, 0, 0.9)';
+                tapText.style.textShadow = '0 0 80px rgba(252, 231, 0, 0.6)';
+                
+                // Mostrar botón secreto
+                btnSecreto.classList.add('show');
+            } else if (tapCount > 40) {
+                tapText.textContent = '💫 ¡Ya casi! 💫';
+            } else if (tapCount > 30) {
+                tapText.textContent = '🌟 Sigue así 🌟';
+            } else if (tapCount > 20) {
+                tapText.textContent = '✨ Vas bien ✨';
+            } else if (tapCount > 10) {
+                tapText.textContent = '💪 No pares 💪';
+            } else {
+                tapText.textContent = '✨ TAP TAP ✨';
+            }
+        }
+
+        // Manejar el tap
+        function handleTap(e) {
+            const ahora = Date.now();
+            if (ahora - ultimoTap < 80) return;
+            ultimoTap = ahora;
+
+            if (tapCount < MAX_TAPS) {
+                tapCount++;
+                
+                // Obtener posición
+                let x, y;
+                if (e.touches) {
+                    x = e.touches[0].clientX;
+                    y = e.touches[0].clientY;
+                    e.preventDefault();
+                } else {
+                    x = e.clientX;
+                    y = e.clientY;
+                }
+
+                // Efecto visual en el texto
+                tapText.classList.add('activo');
+                setTimeout(() => tapText.classList.remove('activo'), 250);
+
+                // Crear partículas
+                crearParticulasTap(x, y);
+
+                // Actualizar UI
+                updateTapUI();
+
+                // Vibración
+                if (navigator.vibrate) {
+                    navigator.vibrate(8);
+                }
+
+                // Si llegó a 50, confetis y efecto especial
+                if (tapCount === MAX_TAPS) {
+                    setTimeout(() => {
+                        crearConfetis();
+                        // Cambiar el texto del TAP TAP
+                        tapText.textContent = '💖 ¡Te quiero mucho! 💖';
+                        tapText.style.fontSize = window.innerWidth < 574 ? '2.5rem' : '3rem';
+                        tapText.style.color = '#ff6b6b';
+                        tapText.style.textShadow = '0 0 80px rgba(255, 107, 107, 0.6)';
+                        setTimeout(() => {
+                            tapText.textContent = '💖 ¡Lo lograste! 💖';
+                            tapText.style.fontSize = '';
+                            tapText.style.color = 'rgba(252, 231, 0, 0.9)';
+                        }, 3000);
+                    }, 300);
+                }
+            }
+        }
+
+        // Escuchar taps en toda la pantalla
+        document.addEventListener('click', handleTap);
+        document.addEventListener('touchstart', handleTap, { passive: false });
+
+        // ==========================================
+        // 7. BOTÓN SECRETO - Redirigir a carta.html
+        // ==========================================
+        btnSecreto.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // Redirigir a la carta (el HTML que compartiste)
+            window.location.href = 'carta.html';
+        });
+
+        // ==========================================
+        // 8. EFECTO DE COLOR EN TAP TEXT
+        // ==========================================
+        setInterval(() => {
+            if (!tapText.classList.contains('activo') && tapCount < MAX_TAPS) {
+                const colores = ['#fce700', '#ff6b6b', '#ff9ff3', '#feca57', '#00d2d3'];
+                const color = colores[Math.floor(Math.random() * colores.length)];
+                tapText.style.textShadow = `0 0 60px ${color}40, 0 0 120px ${color}20`;
+            }
+        }, 3000);
+
+        // ==========================================
+        // 9. INICIALIZAR UI
+        // ==========================================
+        updateTapUI();
+    </script>
+</body>
+</html>

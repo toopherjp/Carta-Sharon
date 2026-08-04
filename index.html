@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="img/flowers.png" type="image/x-icon">
+    <title>FLORES</title>
+    
+    <style>
+        /* Ajustes extra para móvil */
+        @media screen and (max-width: 574px) {
+            body {
+                min-height: 100vh;
+                min-height: 100dvh; /* Para móviles modernos */
+                padding: 10px;
+                overflow-x: hidden;
+            }
+            
+            .greetings {
+                font-size: 2.5rem !important;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 2px;
+            }
+            
+            .greetings span {
+                display: inline-block;
+                font-size: 2.5rem;
+            }
+            
+            .description {
+                font-size: 0.9rem !important;
+                margin: 10px 0 15px 0 !important;
+                text-align: center;
+                padding: 0 15px;
+            }
+            
+            .button button {
+                padding: 12px 30px !important;
+                font-size: 16px !important;
+                border-radius: 30px !important;
+            }
+            
+            .button button a {
+                font-size: 16px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== TEXTO "HOLA SHARON ===== -->
+    <div class="greetings">
+    <span>H</span>
+    <span>O</span>
+    <span>L</span>
+    <span>A</span>
+    <span style="margin: 0 12px;"></span>  <!-- Espacio más grande -->
+    <span>S</span>
+    <span>H</span>
+    <span>A</span>
+    <span>R</span>
+    <span>O</span>
+    <span>N</span>
+</div>
+
+    <!-- ===== DESCRIPCIÓN ===== -->
+    <div class="description">
+        <span>🌸 Tengo un regalo especial para ti 🌸</span>
+    </div>
+
+    <!-- ===== BOTÓN ===== -->
+    <div class="button">
+        <button>
+            <a href="FLORES.html">Haga Clic</a>
+        </button>
+    </div>
+
+    <!-- ===== REPRODUCTOR DE MÚSICA ===== -->
+    <audio id="musica" loop>
+        <source src="img/Floricienta.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <!-- ===== SCRIPT DE MÚSICA ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var audio = document.getElementById('musica');
+            
+            var playAudio = function() {
+                audio.play().then(function() {
+                    console.log('🎵 Música reproduciéndose');
+                }).catch(function(error) {
+                    console.log('⚠️ Error al reproducir:', error);
+                });
+            };
+
+            setTimeout(playAudio, 500);
+
+            document.addEventListener('click', function() {
+                if (audio.paused) {
+                    playAudio();
+                }
+            }, { once: true });
+
+            document.addEventListener('touchstart', function() {
+                if (audio.paused) {
+                    playAudio();
+                }
+            }, { once: true });
+        });
+    </script>
+</body>
+</html>
